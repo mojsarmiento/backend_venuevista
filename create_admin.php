@@ -13,9 +13,10 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Define the email and password
+// Define the email, password, and full name
 $email = 'venuevistaadmin@gmail.com';
 $password = 'VenueVista123@';
+$fullname = 'Venue Vista'; // Define full name
 
 // Hash the password using bcrypt (PASSWORD_DEFAULT)
 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
@@ -29,9 +30,9 @@ if (!$hashed_password) {
 }
 
 // Prepare and bind the SQL statement to insert the admin user
-if ($stmt = $conn->prepare("INSERT INTO login (email, password, user_type) VALUES (?, ?, ?)")) {
+if ($stmt = $conn->prepare("INSERT INTO login (email, password, user_type, full_name) VALUES (?, ?, ?, ?)")) {
     $user_type = 'admin'; // Define user type as 'admin'
-    $stmt->bind_param("sss", $email, $hashed_password, $user_type);
+    $stmt->bind_param("ssss", $email, $hashed_password, $user_type, $fullname); // Include full_name in binding
     
     if ($stmt->execute()) {
         echo "Admin user created successfully.";

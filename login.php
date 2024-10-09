@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Prepare and bind statement to prevent SQL injection
-    if ($stmt = $conn->prepare("SELECT id, email, password, user_type FROM login WHERE email = ?")) {
+    if ($stmt = $conn->prepare("SELECT id, full_name, email, password, user_type FROM login WHERE email = ?")) {
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
@@ -49,16 +49,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Check if user exists
         if ($stmt->num_rows > 0) {
             // Fetch user details
-            $stmt->bind_result($id, $db_email, $db_password_hash, $user_type);
+            $stmt->bind_result($id, $full_name, $db_email, $db_password_hash, $user_type);
             $stmt->fetch();
 
             // Verify password (assuming password is hashed)
             if (password_verify($password, $db_password_hash)) {
-                // Success - include user_type in the response
+                // Success - include user_type and full_name in the response
                 $stmt->close();
                 $conn->close(); // Close the connection before sending response
                 sendResponse(true, 'Login successful.', [
                     'id' => $id,
+                    'full_name' => $full_name, // Added full name
                     'email' => $db_email,
                     'user_type' => $user_type
                 ]);

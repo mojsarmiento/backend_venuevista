@@ -59,11 +59,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if ($user_stmt = $conn->prepare($insert_user_query)) {
                     $user_stmt->bind_param("sss", $full_name, $email, $hashed_password);
                     if ($user_stmt->execute()) {
-                        // Insert user into the login table with 'Reserver' as the default user_type
-                        $insert_login_query = "INSERT INTO login (email, password, user_type, created_at) VALUES (?, ?, ?, NOW())";
+                        // Insert user into the login table with full_name and 'Reserver' as the default user_type
+                        $insert_login_query = "INSERT INTO login (full_name, email, password, user_type, created_at) VALUES (?, ?, ?, ?, NOW())";
                         $user_type = 'Reserver'; // Set default user_type to 'Reserver'
                         if ($login_stmt = $conn->prepare($insert_login_query)) {
-                            $login_stmt->bind_param("sss", $email, $hashed_password, $user_type);
+                            $login_stmt->bind_param("ssss", $full_name, $email, $hashed_password, $user_type);
                             if ($login_stmt->execute()) {
                                 $response['error'] = false;
                                 $response['message'] = "Registration successful!";
