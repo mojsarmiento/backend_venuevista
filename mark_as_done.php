@@ -15,21 +15,19 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch requests
-$sql = "SELECT * FROM requests";
-$result = $conn->query($sql);
+// Get request payload
+$data = json_decode(file_get_contents('php://input'), true);
 
-$requests = [];
+$id = $data['id'];
 
-if ($result->num_rows > 0) {
-    // Output data of each row
-    while($row = $result->fetch_assoc()) {
-        $requests[] = $row;
-    }
+  // SQL query to update status to 'Done'
+$query = "UPDATE requests SET status='Done' WHERE id='$id'";
+
+if (mysqli_query($conn, $query)) {
+    echo json_encode(["success" => true]);
+} else {
+    echo json_encode(["success" => false, "error" => mysqli_error($conn)]);
 }
 
-// Return JSON response
-echo json_encode($requests);
-
-$conn->close();
+mysqli_close($conn);
 ?>
