@@ -20,7 +20,7 @@ if (isset($data->name) && isset($data->location)) {
     $location = $conn->real_escape_string($data->location);
     $pricePerHour = $conn->real_escape_string($data->price_per_hour);
     $availability = $conn->real_escape_string($data->availability);
-    $suitableFor = $conn->real_escape_string($data->category);
+    $category = $conn->real_escape_string($data->category);
     $additionalDetails = $conn->real_escape_string($data->additional_details);
     $images = json_encode($data->images);
 
